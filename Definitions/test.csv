@@ -1,0 +1,4 @@
+PropertyName,DisplayName,DataType,RequiredFlag,DefaultValue,header,Notes,Key
+ID,ID,autonumber,1,0,,,1
+state,state,state,1,,,,0
+VIP,VIP,yesno,1,0,,,0

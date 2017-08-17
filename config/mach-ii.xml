@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mach-ii PUBLIC
+	"-//Mach-II//DTD Mach-II Configuration 1.5.0//EN"
+	"http://www.mach-ii.com/dtds/mach-ii_1_5_0.dtd">
+
+<mach-ii version="1.5">
+
+	<!-- PROPERTIES -->
+	<properties>
+		<property name="applicationRoot" value="/BeanMachine"/>
+		<property name="defaultEvent" value="showHome"/>
+		<property name="eventParameter" value="event"/>
+		<property name="parameterPrecedence" value="form"/>
+		<property name="maxEvents" value="10"/>
+		<property name="exceptionEvent" value="exception"/>
+		<property name = "dsn" value = "BeanMachine" />
+		
+		<property name = "BeanAppName" value = "MyMach2App" />
+		<property name = "SrcTemplatePath" value = "/BeanMachine/M2Template" />
+		<property name = "NewBeanPath" value = "/MyMach2App" />
+		<property name = "CSVPath" value = "/BeanMachine/Definitions" />
+
+	</properties>
+
+<!-- LISTENERS -->
+	<listeners>
+		<listener name="GrinderListener" type="BeanMachine.model.grinder.listener" />
+		<listener name="DictionaryListener" type="BeanMachine.model.Dictionary.DictionaryListener" />
+	</listeners>
+	
+<!-- EVENT-FILTERS -->
+	<event-filters>
+		<!-- EventArgsFilter: sets parameters passed to the filter as arguments in the event -->
+		<event-filter name="eventArgs" type="MachII.filters.EventArgsFilter" />
+		<!-- RequiredFieldsFilter: used to control required fields in form submissions -->
+		<event-filter name="requiredFields" type="MachII.filters.RequiredFieldsFilter" />
+		
+		<event-filter name="DictionaryBeaner" type="BeanMachine.filters.DictionaryBeanerFilter" />
+
+	</event-filters>
+<!-- PLUGINS -->
+	<plugins>
+
+	<plugin name="ApplicationPlugin" type="BeanMachine.plugins.ApplicationPlugin" />			
+
+	</plugins>
+
+
+<!-- EVENT-HANDLERS -->
+	<event-handlers>
+		<event-handler event="showHome" access="public">
+  	<event-arg name="pageTitle" value="BeanMachine - Version 1.0.3" />
+			<view-page name="Header"/>
+			<view-page name="home"/>
+			<view-page name="footer"/>
+		</event-handler>
+
+		<event-handler event="exception" access="private">
+		  	<event-arg name="pageTitle" value="Exception" />
+			<view-page name="header"/>
+			<view-page name="exception"/>
+			<view-page name="footer"/>
+		</event-handler>
+
+
+<!-- Build the Bean -->
+
+
+		<event-handler event="StartBean" access="public">
+			<announce event="showBean" copyEventArgs="true" />
+		</event-handler>
+
+
+		<event-handler event="CreateDefinition" access="public">
+			<notify listener="GrinderListener" method="ReadTable"  resultArg="BeanTable"/>
+			<notify listener="DictionaryListener" method="GetallDictionaryRecords"  resultArg="dictionaryQuery"/>
+
+	  	<event-arg name="pageTitle" value="Define Bean Characteristics" />
+			<view-page name="header"/>
+			<view-page name="BeanGrid"/>
+			<view-page name="footer"/>
+		</event-handler>
+
+		<event-handler event="showBean" access="public">
+			<notify listener="GrinderListener" method="SetupBean" resultarg="BeanTable"/>
+			<notify listener="DictionaryListener" method="GetallDictionaryRecords"  resultArg="dictionaryQuery"/>
+
+	  	<event-arg name="pageTitle" value="Define Bean Characteristics" />
+			<view-page name="header"/>
+			<view-page name="BeanGrid"/>
+			<view-page name="footer"/>
+		</event-handler>
+
+		<event-handler event="SaveDefinition" access="public">
+			<notify listener="GrinderListener" method="SaveDefinition"  />
+<!-- 			<announce event="showBean" copyEventArgs="true" /> -->
+	</event-handler>
+
+		
+
+		<event-handler event="CreateNewBean" access="public">
+			<filter name="requiredFields">
+				<parameter name="requiredFields" value="beanIdField" />
+				<parameter name="invalidEvent" value="startBean" />
+			</filter>
+			<notify listener="GrinderListener" method="createBean"  resultArg="BuildResults"/>
+			<event-arg name="pageTitle" value="Build Results" />
+			<view-page name="header"/>
+			<view-page name="GrinderResults"/>
+			<view-page name="footer"/>
+		</event-handler>
+		<event-handler event="BuildResults" access="private">
+			<event-arg name="pageTitle" value="Build Results" />
+			<view-page name="header" />
+			<view-page name="GrinderResults" />
+			<view-page name="footer" />
+		</event-handler>		
+
+		<event-handler event="listDefinitions" access="public">
+			<notify listener="GrinderListener" method="ListDefinitions" resultArg="queryResults" />
+
+			<view-page name="ListDefinitions" contentArg="content" />
+			<event-arg name="pageTitle" value="Defined Beans" />
+			<view-page name="header" />
+			<view-page name="mainTemplate" />
+			<view-page name="footer" />
+		</event-handler>
+
+		<event-handler event="listTables" access="public">
+
+			<view-page name="ListTables" contentArg="content" />
+			<event-arg name="pageTitle" value="Enter Table to Creat Bean From" />
+			<view-page name="header" />
+			<view-page name="mainTemplate" />
+			<view-page name="footer" />
+		</event-handler>
+
+
+
+		<event-handler event="showIssues" access="public">
+			<event-arg name="pageTitle" value="Known Issues" />
+			<view-page name="header" />
+			<view-page name="showissues" />
+			<view-page name="footer" />
+		</event-handler>
+		
+	
+<!-- Dictionary Administration -->
+
+<!-- Displays the bean form for edit and new records -->
+		<event-handler event="ShowDictionaryForm" access="public">
+			<filter name="DictionaryBeaner" />
+			<view-page name="header" />
+			<view-page name="DictionaryForm"  />
+			<view-page name="footer" />
+		</event-handler>
+	
+<!-- CRUD EVENTS -->
+			
+<!-- Create -->
+		<event-handler event="AddDictionary" access="public">
+			<event-arg name="submitEvent" value="createDictionary" />
+			<event-arg name="submitLabel" value="Create" />
+   <event-arg name="pageTitle" value="New Dictionary Info" />
+			<announce event="showDictionaryForm" copyEventArgs="true" />
+		</event-handler>
+		
+		<event-handler event="CreateDictionary" access="public">
+			<filter name="requiredFields">
+				<parameter name="requiredFields" value="SqlDataType,CfDataType,DataTypeName,Displaylen,ID,MaxLen" />
+				<parameter name="invalidEvent" value="showDictionaryForm" />
+			</filter>
+			<event-bean name="Dictionary" type="BeanMachine.model.Dictionary.Dictionary" 
+					fields="Button,SqlDataType,ValidationScript,CfDataType,DataTypeName,Displaylen,Format,ID,InputType,MaxLen,Params" />
+			<notify listener="DictionaryListener" method="CreateDatatype" />
+		</event-handler>
+
+		<event-handler event="DictionaryCreated" access="private">
+			<announce event="AddDictionary" />			
+		</event-handler>
+		
+		
+<!-- Read, in this case, Edit -->
+<event-handler event="editDictionary" access="public">
+			<notify listener="DictionaryListener" method="ReadDatatype" resultArg="Dictionary" />
+			<filter name="eventArgs">
+				<parameter name="submitEvent" value="updateDictionary" />
+				<parameter name="submitLabel" value="Update" />
+			</filter>
+			<event-arg name="pageTitle" value="Edit Dictionary Info" />
+			<announce event="showDictionaryForm" copyEventArgs="true" />
+		</event-handler>	
+
+		<!-- Update -->
+		<event-handler event="updateDictionary" access="public">
+			<filter name="requiredFields">
+			<parameter name="requiredFields" value="SqlDataType,CfDataType,DataTypeName,Displaylen,ID,MaxLen" />
+				<parameter name="invalidEvent" value="editDictionary" />
+			</filter>
+			<event-bean name="Dictionary" type="BeanMachine.model.Dictionary.Dictionary" 
+					fields="Button,SqlDataType,ValidationScript,CfDataType,DataTypeName,Displaylen,Format,ID,InputType,MaxLen,Params" />
+			<notify listener="DictionaryListener" method="UpdateDatatype" />
+		</event-handler>
+	
+		<event-handler event="DictionaryUpdated" access="public">
+			<announce event="ListDictionary" />
+	</event-handler>
+	
+	
+	
+<!-- Delete -->
+		<event-handler event="deleteDictionary" access="public">
+			<notify listener="DictionaryListener" method="DeleteDatatype" />
+		</event-handler>
+		
+		<event-handler event="DictionaryDeleted" access="public">
+			<announce event="listDictionary" />
+		</event-handler>
+
+<!-- ListAll -->
+
+		<event-handler event="listDictionary" access="public">
+			<notify listener="DictionaryListener" method="GetallDictionaryRecords" resultArg="queryResults" />
+
+			<view-page name="DictionaryList" contentArg="content" />
+			<event-arg name="pageTitle" value="Data Dictionary" />
+			<view-page name="header" />
+
+			<view-page name="mainTemplate" />
+			<view-page name="footer" />
+		</event-handler>
+
+	
+	</event-handlers>
+	
+<!-- PAGE-VIEWS -->
+	<page-views>
+        <page-view name="header" page="/views/layout/header.cfm" />
+      	<page-view name="footer" page="/views/layout/footer.cfm" />
+
+
+		<page-view name="GrinderResults" page="/views/GrinderResults.cfm"/>
+		<page-view name="ListDefinitions" page="/views/ListDefinitions.cfm"/>
+		<page-view name="ListTables" page="/views/ListTables.cfm"/>
+		<page-view name="showIssues" page="/views/Issues.cfm"/>
+		<page-view name="BeanGrid" page="/views/BeanGrid.cfm"/>
+
+
+		<page-view name="DictionaryList" page="/views/DictionaryList.cfm" />
+		<page-view name="DictionaryForm" page="/views/DictionaryForm.cfm" />
+		
+		
+		<page-view name="home" page="/views/home.cfm"/>
+		<page-view name="mainTemplate" page="/views/mainTemplate.cfm" />
+		<page-view name="exception" page="/views/exception.cfm"/>
+	</page-views>
+	
+</mach-ii>

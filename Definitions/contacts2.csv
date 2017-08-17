@@ -1,0 +1,8 @@
+PropertyName,DisplayName,DataType,RequiredFlag,DefaultValue,header,Notes,Description
+id,id,autonumber,1,0,,,
+VIP,Very Important person,yesno,1,0,,,
+name,name,alpha40,1,,Personal Information,,
+Address,Address,alpha40,1,,,,
+City,City,alpha40,1,,,,
+State,State,state,1,,,,
+Zip,Zip,zipcode,1,,,,

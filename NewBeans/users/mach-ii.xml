@@ -1,0 +1,153 @@
+<mach-ii version="1.0">
+
+	<!-- PROPERTIES -->
+	<properties>
+		<!-- Mach-II Required -->
+		<property name="applicationRoot" value="/MyMach2App" />
+		<property name="defaultEvent" value="showHome" />
+		<property name="eventParameter" value="event" />
+		<property name="parameterPrecedence" value="form" />
+		<property name="maxEvents" value="10" />
+		<property name="exceptionEvent" value="exception" />
+		
+		<!-- Application Specific -->
+		<property name="DSN" value="pimDB" />
+	</properties>
+
+	<!-- LISTENERS -->
+	<listeners>
+		<listener name="usersListener" type="MyMach2App.model.users.usersListener" />
+	</listeners>
+	
+	<!-- EVENT-FILTERS -->
+	<event-filters>
+		<!-- EventArgsFilter: sets parameters passed to the filter as arguments in the event -->
+		<event-filter name="eventArgs" type="MachII.filters.EventArgsFilter" />
+		<!-- RequiredFieldsFilter: used to control required fields in form submissions -->
+		<event-filter name="requiredFields" type="MachII.filters.RequiredFieldsFilter" />
+
+		<!-- usersBeanerFilter: ensures there is a users object available in the event -->
+		<event-filter name="usersBeaner" type="MyMach2App.filters.usersBeanerFilter" />
+	</event-filters>
+
+	<!-- PLUGINS -->
+	<plugins>
+		<plugin name="ApplicationPlugin" type="MyMach2App.plugins.ApplicationPlugin">			
+		</plugin>
+
+	</plugins>
+	
+<!-- EVENT-HANDLERS -->
+	<event-handlers>
+
+		<event-handler event="showHome" access="public">
+  	<event-arg name="pageTitle" value="The Incredible Mach-ii Bean Machine" />
+			<view-page name="Header"/>
+			<view-page name="home"/>
+			<view-page name="footer"/>
+		</event-handler>
+
+		<event-handler event="exception" access="private">
+		  	<event-arg name="pageTitle" value="Exception" />
+			<view-page name="header"/>
+			<view-page name="exception"/>
+			<view-page name="footer"/>
+		</event-handler>
+								
+<!-- users Administration -->
+
+<!-- Displays the bean form for edit and new records -->
+		<event-handler event="ShowusersForm" access="public">
+			<filter name="usersBeaner" />
+			<view-page name="header" />
+			<view-page name="usersForm"  />
+			<view-page name="footer" />
+		</event-handler>
+	
+<!-- CRUD EVENTS -->
+			
+<!-- Create -->
+		<event-handler event="Addusers" access="public">
+			<event-arg name="submitEvent" value="createusers" />
+			<event-arg name="submitLabel" value="Create" />
+   <event-arg name="pageTitle" value="New users Info" />
+			<announce event="showusersForm" copyEventArgs="true" />
+		</event-handler>
+		
+		<event-handler event="Createusers" access="public">
+			<filter name="requiredFields">
+				<parameter name="requiredFields" value="Company,Datecreated,Email,Firstname,Isadmin,Lastname,Password,Userid,Username" />
+				<parameter name="invalidEvent" value="showusersForm" />
+			</filter>
+			<event-bean name="users" type="MyMach2App.model.users.users" 
+					fields="Company,Datecreated,Email,Firstname,Isadmin,Lastname,Password,Userid,Username" />
+			<notify listener="usersListener" method="CreateRecord" />
+		</event-handler>
+
+		<event-handler event="usersCreated" access="private">
+			<announce event="Addusers" />			
+		</event-handler>
+		
+		
+<!-- Read, in this case, Edit -->
+<event-handler event="editusers" access="public">
+			<notify listener="usersListener" method="ReadRecord" resultArg="users" />
+			<filter name="eventArgs">
+				<parameter name="submitEvent" value="updateusers" />
+				<parameter name="submitLabel" value="Update" />
+			</filter>
+			<event-arg name="pageTitle" value="Edit users Info" />
+			<announce event="showusersForm" copyEventArgs="true" />
+		</event-handler>	
+
+		<!-- Update -->
+		<event-handler event="updateusers" access="public">
+			<filter name="requiredFields">
+				<parameter name="requiredFields" value="Company,Datecreated,Email,Firstname,Isadmin,Lastname,Password,Userid,Username" />
+				<parameter name="invalidEvent" value="editusers" />
+			</filter>
+			<event-bean name="users" type="MyMach2App.model.users.users" 
+					fields="Company,Datecreated,Email,Firstname,Isadmin,Lastname,Password,Userid,Username" />
+			<notify listener="usersListener" method="updateRecord" />
+		</event-handler>
+	
+		<event-handler event="usersUpdated" access="public">
+			<announce event="Listusers" />
+	</event-handler>
+	
+	
+	
+<!-- Delete -->
+		<event-handler event="deleteusers" access="public">
+			<notify listener="usersListener" method="deleteRecord" />
+		</event-handler>
+		
+		<event-handler event="usersDeleted" access="public">
+			<announce event="listusers" />
+		</event-handler>
+
+<!-- ListAll -->
+
+		<event-handler event="listusers" access="public">
+			<notify listener="usersListener" method="getAllRecords" resultArg="queryResults" />
+			<event-arg name="pageTitle" value="users List" />
+			<view-page name="header" />
+			<view-page name="usersList" contentArg="content" />
+			<view-page name="mainTemplate" />
+			<view-page name="footer" />
+		</event-handler>
+
+	</event-handlers>
+	
+	<!-- PAGE-VIEWS -->
+	<page-views>
+        <page-view name="header" page="/views/layout/header.cfm" />
+      	<page-view name="footer" page="/views/layout/footer.cfm" />
+
+		<page-view name="home" page="/views/home.cfm" />
+		<page-view name="usersList" page="/views/usersList.cfm" />
+		<page-view name="usersForm" page="/views/usersForm.cfm" />
+		<page-view name="mainTemplate" page="/views/mainTemplate.cfm" />
+		<page-view name="exception" page="/views/exception.cfm" />
+	</page-views>
+</mach-ii>

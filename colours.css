@@ -1,0 +1,113 @@
+/* 
+ * File: blue-steel.css
+ * Description: Colour scheme and Font information for template. Change this file to create custom colour schemes.
+ *				I have tried to include most elements that you may want to change, but i may have missed some...
+ *				You can always make your own additions of course.
+ */ 
+
+body {
+	color: #000000;
+	border-color: #C0C0C0; /* Sometimes this has to be overridden...not sure why */
+	font-size: 10pt;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;	
+}
+
+
+
+.song {
+	color: #C60000;
+	font-style: italic;
+	font-size: 14px;
+	text-align: left;
+	font-weight: bold;
+	padding: 0 10px 0 10px;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+	color: #990000;
+	font-family: Tahoma, Arial, sans, sans-serif;
+	font-weight: bolder;
+}
+
+h1, h2, h3{
+	/* Don't want these bold, they make enough impact as normal text */
+	font-weight: normal;
+}
+th {
+	background-color: #993333;
+	color: #FFFFFF;
+}
+#banner p {
+	font-family: Tahoma, Arial, sans, sans-serif; 
+	font-size: larger;
+}
+
+.box h3 {
+	background-color: #993333;;	
+	color: #FFF; 
+}
+.box h2 {
+	background-color: red;	
+	color: #FFF; 
+}
+
+#footer {
+	font-size: smaller;
+}
+
+
+/* Navigation Bar */
+#navigation {
+	color: #FFF;
+	background-color: #993333;
+	font-family: Tahoma, Arial, Helvetica, sans, sans-serif;
+	font-weight: bolder;
+}
+
+
+/* Form widgets */
+.button {
+	background-color: #77AACC; 
+	color: #FFF;
+}
+
+input {
+	background-color: #E0E0E0;
+	border-color: #C0C0C0;
+}
+
+/* Navigation Link Styles */
+#navigation a, #navigation a:active, #navigation a:visited {
+	color: #FFF;
+	background-color: #993333;
+	border-color: #993333;
+	
+}
+
+#navigation a:hover, #navigation a:visited:hover {
+	color: #CC3333;
+	background-color: #E0E0E0;
+	border-color: #757575;
+}
+
+/* Standard Link Styles */
+a, a:active {
+	color: #993333;
+	text-decoration: underline;
+}
+
+a:hover, a:active:hover, a:visited:hover {
+	color: #CC3333;
+}
+td {
+	color: blue;
+}
+td .cherokee{
+	color: Red;
+}
+.errormessage {
+	color: red;
+	font-weight: bolder;
+	font-size: 16px;
+}

@@ -1,0 +1,153 @@
+<mach-ii version="1.0">
+
+	<!-- PROPERTIES -->
+	<properties>
+		<!-- Mach-II Required -->
+		<property name="applicationRoot" value="/<appname>" />
+		<property name="defaultEvent" value="showHome" />
+		<property name="eventParameter" value="event" />
+		<property name="parameterPrecedence" value="form" />
+		<property name="maxEvents" value="10" />
+		<property name="exceptionEvent" value="exception" />
+		
+		<!-- Application Specific -->
+		<property name="DSN" value="BeanMachine" />
+	</properties>
+
+	<!-- LISTENERS -->
+	<listeners>
+		<listener name="<beanname>Listener" type="<appname>.model.<beanname>.<beanname>Listener" />
+	</listeners>
+	
+	<!-- EVENT-FILTERS -->
+	<event-filters>
+		<!-- EventArgsFilter: sets parameters passed to the filter as arguments in the event -->
+		<event-filter name="eventArgs" type="MachII.filters.EventArgsFilter" />
+		<!-- RequiredFieldsFilter: used to control required fields in form submissions -->
+		<event-filter name="requiredFields" type="MachII.filters.RequiredFieldsFilter" />
+
+		<!-- <beanname>BeanerFilter: ensures there is a <beanname> object available in the event -->
+		<event-filter name="<beanname>Beaner" type="<appname>.filters.<beanname>BeanerFilter" />
+	</event-filters>
+
+	<!-- PLUGINS -->
+	<plugins>
+		<plugin name="ApplicationPlugin" type="<appname>.plugins.ApplicationPlugin">			
+		</plugin>
+
+	</plugins>
+	
+<!-- EVENT-HANDLERS -->
+	<event-handlers>
+
+		<event-handler event="showHome" access="public">
+  	<event-arg name="pageTitle" value="The Incredible Mach-ii Bean Machine" />
+			<view-page name="Header"/>
+			<view-page name="home"/>
+			<view-page name="footer"/>
+		</event-handler>
+
+		<event-handler event="exception" access="private">
+		  	<event-arg name="pageTitle" value="Exception" />
+			<view-page name="header"/>
+			<view-page name="exception"/>
+			<view-page name="footer"/>
+		</event-handler>
+								
+<!-- <beanname> Administration -->
+
+<!-- Displays the bean form for edit and new records -->
+		<event-handler event="Show<beanname>Form" access="public">
+			<filter name="<beanname>Beaner" />
+			<view-page name="header" />
+			<view-page name="<beanname>Form"  />
+			<view-page name="footer" />
+		</event-handler>
+	
+<!-- CRUD EVENTS -->
+			
+<!-- Create -->
+		<event-handler event="Add<beanname>" access="public">
+			<event-arg name="submitEvent" value="create<beanname>" />
+			<event-arg name="submitLabel" value="Create" />
+   <event-arg name="pageTitle" value="New <beanname> Info" />
+			<announce event="show<beanname>Form" copyEventArgs="true" />
+		</event-handler>
+		
+		<event-handler event="Create<beanname>" access="public">
+			<filter name="requiredFields">
+				<parameter name="requiredFields" value="<requiredfields>" />
+				<parameter name="invalidEvent" value="show<beanname>Form" />
+			</filter>
+			<event-bean name="<beanname>" type="<appname>.model.<beanname>.<beanname>" 
+					fields="<beanfields>" />
+			<notify listener="<beanname>Listener" method="<CRUDCreateMethod>" />
+		</event-handler>
+
+		<event-handler event="<beanname>Created" access="private">
+			<announce event="Add<beanname>" />			
+		</event-handler>
+		
+		
+<!-- Read, in this case, Edit -->
+<event-handler event="edit<beanname>" access="public">
+			<notify listener="<beanname>Listener" method="<CRUDReadMethod>" resultArg="<beanname>" />
+			<filter name="eventArgs">
+				<parameter name="submitEvent" value="update<beanname>" />
+				<parameter name="submitLabel" value="Update" />
+			</filter>
+			<event-arg name="pageTitle" value="Edit <beanname> Info" />
+			<announce event="show<beanname>Form" copyEventArgs="true" />
+		</event-handler>	
+
+		<!-- Update -->
+		<event-handler event="update<beanname>" access="public">
+			<filter name="requiredFields">
+				<parameter name="requiredFields" value="<requiredfields>" />
+				<parameter name="invalidEvent" value="edit<beanname>" />
+			</filter>
+			<event-bean name="<beanname>" type="<appname>.model.<beanname>.<beanname>" 
+					fields="<beanfields>" />
+			<notify listener="<beanname>Listener" method="<CRUDUpdateMethod>" />
+		</event-handler>
+	
+		<event-handler event="<beanname>Updated" access="public">
+			<announce event="List<beanname>" />
+	</event-handler>
+	
+	
+	
+<!-- Delete -->
+		<event-handler event="delete<beanname>" access="public">
+			<notify listener="<beanname>Listener" method="<CRUDDeleteMethod>" />
+		</event-handler>
+		
+		<event-handler event="<beanname>Deleted" access="public">
+			<announce event="list<beanname>" />
+		</event-handler>
+
+<!-- ListAll -->
+
+		<event-handler event="list<beanname>" access="public">
+			<notify listener="<beanname>Listener" method="<GetAllRecordsMethod>" resultArg="queryResults" />
+			<event-arg name="pageTitle" value="<beanname> List" />
+			<view-page name="header" />
+			<view-page name="<beanname>List" contentArg="content" />
+			<view-page name="mainTemplate" />
+			<view-page name="footer" />
+		</event-handler>
+
+	</event-handlers>
+	
+	<!-- PAGE-VIEWS -->
+	<page-views>
+        <page-view name="header" page="/views/layout/header.cfm" />
+      	<page-view name="footer" page="/views/layout/footer.cfm" />
+
+		<page-view name="home" page="/views/home.cfm" />
+		<page-view name="<beanname>List" page="/views/<beanname>List.cfm" />
+		<page-view name="<beanname>Form" page="/views/<beanname>Form.cfm" />
+		<page-view name="mainTemplate" page="/views/mainTemplate.cfm" />
+		<page-view name="exception" page="/views/exception.cfm" />
+	</page-views>
+</mach-ii>

@@ -1,0 +1,9 @@
+fieldname,ID,PropertyName,DataType,DisplayName,RequiredFlag,DefaultValue,Header,Notes,Description
+DataType,autonumber,alpha30,alpha10,alpha10,yesno,alpha10,alpha40,note,alpha40
+DisplayName,ID,Property Name,userID,Display Name,Required,Default Value,Header,Notes,Description
+RequiredFlag,r,r,r,r,r,,,,
+DefaultValue,1,,,,1,,,,
+LineBreak,x,x,x,x,x,x,x,x,x
+Header,,,,,,,,,
+Notes,,,,,,,,,
+Description,,,,,,,,,

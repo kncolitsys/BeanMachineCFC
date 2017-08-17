@@ -1,0 +1,13 @@
+PropertyName,DisplayName,DataType,RequiredFlag,DefaultValue,header,Notes,Key
+ID,ID,autonumber,0,0,,,1
+eMail,eMail,email,1,,,,0
+FirstName,First Name,alpha40,1,,,,0
+LastName,Last  Name,alpha40,1,,,,0
+Company,Company,alpha10,1,,,,0
+Phone,Phone,phone,1,,,,0
+dateCreated,Date Created,datePast,1,,,,0
+Notes,Notes,note,1,,,,0
+city,city,alpha40,1,,,,0
+state,State,state,1,,,,0
+zip,Zip Code,zipcode,1,,,,0
+VIP,VIP,yesno,1,0,,,0

@@ -1,0 +1,10 @@
+PropertyName,DisplayName,DataType,RequiredFlag,DefaultValue,header,Notes,Key
+userID,userID,autonumber,0,0,,,1
+Username,Username,alpha10,0,,,,0
+Password,Password,alpha10,0,,,,0
+eMail,eMail,alpha10,0,,,,0
+FirstName,First Name,alpha10,0,,,,0
+LastName,LastName,alpha10,0,,,,0
+Company,Company,alpha10,0,,,,0
+dateCreated,dateCreated,datePast,0,,,,0
+isAdmin,isAdmin,yesno,0,0,,,0
